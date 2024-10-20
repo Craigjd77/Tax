@@ -564,6 +564,36 @@
         updateTaxStrategies([]);
         createAssetAllocationChart({});
     });
+    function generateRandomFinancialData() {
+    return {
+        name: "John Doe",
+        age: Math.floor(Math.random() * (65 - 22) + 22),
+        state: "California",
+        salary: Math.floor(Math.random() * (200000 - 30000) + 30000),
+        realEstate: Math.floor(Math.random() * (1000000 - 100000) + 100000),
+        investments: Math.floor(Math.random() * (500000 - 10000) + 10000),
+        cash: Math.floor(Math.random() * (50000 - 1000) + 1000),
+        debt: Math.floor(Math.random() * (100000 - 0) + 0)
+    };
+}
+
+function populateFinancialSummaryForm() {
+    const data = generateRandomFinancialData();
+    document.getElementById('name').value = data.name;
+    document.getElementById('age').value = data.age;
+    document.getElementById('state').value = data.state;
+    document.getElementById('salary').value = data.salary;
+    document.getElementById('real_estate').value = data.realEstate;
+    document.getElementById('investments').value = data.investments;
+    document.getElementById('cash').value = data.cash;
+    document.getElementById('debt').value = data.debt;
+}
+
+// Call this function when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    populateFinancialSummaryForm();
+    // ... (keep the rest of your existing DOMContentLoaded code here)
+});
     </script>
 </body>
 </html>
