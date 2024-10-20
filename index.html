@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Tax Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a237e;
+            --secondary-color: #4caf50;
+            --background-color: #2c3e50;
+            --card-background: #34495e;
+            --text-color: #ecf0f1;
+            --input-background: #2c3e50;
+            --input-text-color: #ecf0f1;
+            --input-border-color: #7f8c8d;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--background-color);
+            background-image: 
+                linear-gradient(to right, rgba(236, 240, 241, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(236, 240, 241, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            font-size: 16px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            text-align: center;
+        }
+        h2 {
+            font-size: 24px;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--input-border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: var(--input-background);
+            color: var(--input-text-color);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #net-worth-summary {
+            background-color: var(--secondary-color);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        .retirement-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .stat-item {
+            background-color: var(--input-background);
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .stat-label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+        .chart-container {
+            margin-top: 20px;
+            height: 300px;
+            position: relative;
+        }
+        #strategies-list {
+            margin-top: 15px;
+        }
+        .strategy-impact {
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+        .impact-bar {
+            background-color: var(--secondary-color);
+            height: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+        }
+        .collapse-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font: inherit;
+            cursor: pointer;
+            padding: 0;
+            text-align: left;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .collapse-toggle:focus {
+            outline: none;
+        }
+        .collapse-toggle .arrow {
+            transition: transform 0.3s;
+        }
+        .collapse-toggle[aria-expanded="true"] .arrow {
+            transform: rotate(180deg);
+        }
+        .collapsible-content {
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            max-height: 0;
+        }
+        .collapsible-content[hidden] {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Personal Tax Assistant</h1>
+    <div class="card" id="workflow-explanation">
+        <h2>
+            <button class="collapse-toggle" aria-expanded="false">
+                How to Use This Tool
+                <span class="arrow">▼</span>
+            </button>
+        </h2>
+        <div class="collapsible-content" hidden>
+            <ol>
+                <li>Fill out your financial information in the "Your Financial Summary" section</li>
+                <li>Click "Calculate Net Worth" to see your current financial status</li>
+                <li>Adjust your information in the "Update Your Information" section if needed</li>
+                <li>Click "Update Projections" to see how changes affect your retirement projections and tax strategies</li>
+            </ol>
+        </div>
+    </div>
+    <div id="net-worth-summary" style="display: none;">
+        <h2>Net Worth Summary</h2>
+        <p>Name: <span id="display-name"></span></p>
+        <p>Net Worth: <strong id="display-net-worth"></strong></p>
+    </div>
+    <div class="grid-container">
+        <div class="card" id="summary">
+            <h2>Your Financial Summary</h2>
+            <form id="financial-summary-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+                
+                <label for="state">State:</label>
+                <input type="text" id="state" name="state" required>
+                
+                <label for="filing_status">Filing Status:</label>
+                <select id="filing_status" name="filing_status" required>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
+                </select>
+                
+                <label for="salary">Annual Salary:</label>
+                <input type="number" id="salary" name="salary" required>
+                
+                <h3>Assets</h3>
+                <label for="real_estate">Real Estate Value:</label>
+                <input type="number" id="real_estate" name="real_estate" required>
+                
+                <label for="investments">Investments Value:</label>
+                <input type="number" id="investments" name="investments" required>
+                
+                <label for="cash">Cash:</label>
+                <input type="number" id="cash" name="cash" required>
+                
+                <button type="button" id="calculate-net-worth">Calculate Net Worth</button>
+            </form>
+        </div>
+        <div class="card" id="user-inputs">
+            <h2>Update Your Information</h2>
+            <form id="finance-form">
+                <label for="update_age">Age:</label>
+                <input type="number" id="update_age" name="age" required>
+                
+                <label for="update_salary">Annual Salary:</label>
+                <input type="number" id="update_salary" name="salary" required>
+                
+                <label for="current_net_worth">Current Net Worth:</label>
+                <input type="number" id="current_net_worth" name="current_net_worth" required>
+                
+                <label for="retirement_age">Desired Retirement Age:</label>
+                <input type="number" id="retirement_age" name="retirement_age" required>
+                
+                <label for="target_net_worth">Target Net Worth at Retirement:</label>
+                <input type="number" id="target_net_worth" name="target_net_worth" required>
+                
+                <button type="submit">Update Projections</button>
+            </form>
+        </div>
+    </div>
+    <div class="card" id="retirement-projection">
+        <h2>Retirement Projection</h2>
+        <div class="retirement-stats">
+            <div class="stat-item">
+                <span class="stat-label">Years to retirement:</span>
+                <span id="years-to-retirement" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Current net worth:</span>
+                <span id="current-net-worth-display" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Target net worth at retirement:</span>
+                <span id="target-net-worth-display" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Required annual growth rate:</span>
+                <span id="required-growth-rate" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Monthly investment needed:</span>
+                <span id="monthly-investment-needed" class="stat-value"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Yearly investment needed:</span>
+                <span id="yearly-investment-needed" class="stat-value"></span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="retirement-chart"></canvas>
+        </div>
+    </div>
+    <div class="grid-container">
+        <div class="card" id="tax-strategies">
+            <h2>Tax Optimization Strategies</h2>
+            <div id="strategies-list"></div>
+        </div>
+        <div class="card" id="asset-allocation">
+            <h2>Asset Allocation</h2>
+            <div class="chart-container">
+                <canvas id="asset-chart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const financialSummaryForm = document.getElementById('financial-summary-form');
+        const calculateNetWorthButton = document.getElementById('calculate-net-worth');
+        const financeForm = document.getElementById('finance-form');
+        let retirementChart, assetChart;
+
+        const toggleButton = document.querySelector('.collapse-toggle');
+        const content = document.querySelector('.collapsible-content');
+
+        if (toggleButton && content) {
+            toggleButton.addEventListener('click', function() {
+                const expanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', String(!expanded));
+                content.hidden = expanded;
+                
+                if (expanded) {
+                    content.style.maxHeight = null;
+                } else {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            });
+        } else {
+            console.error('Toggle button or content not found');
+        }
+
+        calculateNetWorthButton.addEventListener('click', calculateNetWorth);
+
+        function calculateNetWorth() {
+            const formData = new FormData(financialSummaryForm);
+            
+            const realEstate = parseFloat(formData.get('real_estate')) || 0;
+            const investments = parseFloat(formData.get('investments')) || 0;
+            const cash = parseFloat(formData.get('cash')) || 0;
+            
+            const netWorth = realEstate + investments + cash;
+            
+            // Update net worth summary
+            document.getElementById('display-name').textContent = formData.get('name');
+            document.getElementById('display-net-worth').textContent = '$' + netWorth.toLocaleString();
+            document.getElementById('net-worth-summary').style.display = 'block';
+            
+            // Update user inputs
+            document.getElementById('update_age').value = formData.get('age');
+            document.getElementById('update_salary').value = formData.get('salary');
+            document.getElementById('current_net_worth').value = netWorth;
+            document.getElementById('retirement_age').value = parseInt(formData.get('age')) + 20;
+            document.getElementById('target_net_worth').value = Math.round(netWorth * 2);
+
+            // Update asset allocation chart
+            createAssetAllocationChart({
+                "Real Estate": realEstate,
+                "Investments": investments,
+                "Cash": cash
+            });
+        }
+
+        financeForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            // Use actual form data instead of simulated response
+            const currentNetWorth = parseFloat(formData.get('current_net_worth')) || 0;
+            const targetNetWorth = parseFloat(formData.get('target_net_worth')) || 0;
+            const currentAge = parseInt(formData.get('age')) || 0;
+            const retirementAge = parseInt(formData.get('retirement_age')) || 0;
+            const yearsToRetirement = retirementAge - currentAge;
+
+            const annualGrowthNeeded = Math.pow(targetNetWorth / currentNetWorth, 1 / yearsToRetirement) - 1;
+            const monthlyInvestmentNeeded = (targetNetWorth - currentNetWorth * Math.pow(1 + annualGrowthNeeded, yearsToRetirement)) / 
+                                            ((Math.pow(1 + annualGrowthNeeded, yearsToRetirement) - 1) / annualGrowthNeeded) / 12;
+
+            const result = {
+                retirement_projection: {
+                    years_to_retirement: yearsToRetirement,
+                    current_net_worth: currentNetWorth,
+                    target_net_worth: targetNetWorth,
+                    annual_growth_needed: annualGrowthNeeded,
+                    monthly_investment_needed: monthlyInvestmentNeeded
+                },
+                tax_strategies: [
+                    { description: "Maximize 401(k) contributions", impact: 80 },
+                    { description: "Contribute to an IRA", impact: 60 },
+                    { description: "Consider tax-loss harvesting", impact: 40 }
+                ]
+            };
+
+            updateResults(result);
+        });
+
+        function updateResults(result) {
+            document.getElementById('years-to-retirement').textContent = result.retirement_projection.years_to_retirement;
+            document.getElementById('current-net-worth-display').textContent = '$' + result.retirement_projection.current_net_worth.toLocaleString();
+            document.getElementById('target-net-worth-display').textContent = '$' + result.retirement_projection.target_net_worth.toLocaleString();
+            document.getElementById('required-growth-rate').textContent = (result.retirement_projection.annual_growth_needed * 100).toFixed(2) + '%';
+            document.getElementById('monthly-investment-needed').textContent = '$' + result.retirement_projection.monthly_investment_needed.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('yearly-investment-needed').textContent = '$' + (result.retirement_projection.monthly_investment_needed * 12).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+            updateRetirementChart(result.retirement_projection);
+            updateTaxStrategies(result.tax_strategies);
+        }
+
+        function updateRetirementChart(projectionData) {
+            const ctx = document.getElementById('retirement-chart').getContext('2d');
+            const currentAge = parseInt(document.getElementById('update_age').value);
+            const years = Array.from({length: projectionData.years_to_retirement}, (_, i) => currentAge + i);
+            const projectedWealth = years.map((_, index) => 
+                projectionData.current_net_worth * Math.pow(1 + projectionData.annual_growth_needed, index)
+            );
+
+            if (retirementChart) {
+                retirementChart.destroy();
+            }
+
+            retirementChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [{
+                        label: 'Projected Wealth',
+                        data: projectedWealth,
+                        borderColor: '#4caf50',
+                        fill: false
+                    }, {
+                        label: 'Target Net Worth at Retirement',
+                        data: Array(projectionData.years_to_retirement).fill(projectionData.target_net_worth),
+                        borderColor: '#f39c12',
+                        borderDash: [5, 5],
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Retirement Wealth Projection',
+                            color: '#ecf0f1'
+                        },
+                        legend: {
+                            labels: {
+                                color: '#ecf0f1'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Age',
+                                color: '#ecf0f1'
+                            },
+                            ticks: {
+                                color: '#ecf0f1'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Wealth ($)',
+                                color: '#ecf0f1'
+                            },
+                            ticks: {
+                                color: '#ecf0f1',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateTaxStrategies(strategies) {
+            const strategiesList = document.getElementById('strategies-list');
+            strategiesList.innerHTML = '';
+            strategies.forEach((strategy, index) => {
+                const strategyElement = document.createElement('div');
+                strategyElement.className = 'strategy-impact';
+                strategyElement.innerHTML = `
+                    <span>${index + 1}. ${strategy.description}</span>
+                    <div class="impact-bar" style="width: ${strategy.impact}%;"></div>
+                `;
+                strategiesList.appendChild(strategyElement);
+            });
+        }
+
+        function createAssetAllocationChart(assetData) {
+            const ctx = document.getElementById('asset-chart').getContext('2d');
+            
+            const labels = Object.keys(assetData);
+            const data = Object.values(assetData);
+            
+            if (assetChart) {
+                assetChart.destroy();
+            }
+            
+            assetChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            '#4caf50', '#f39c12', '#3498db', '#e74c3c', '#9b59b6',
+                            '#1abc9c', '#34495e', '#16a085', '#27ae60', '#2980b9'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Asset Allocation',
+                            color: '#ecf0f1'
+                        },
+                        legend: {
+                            labels: {
+                                color: '#ecf0f1'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize charts with empty data
+        updateRetirementChart({
+            years_to_retirement: 0,
+            current_net_worth: 0,
+            target_net_worth: 0,
+            annual_growth_needed: 0
+        });
+        updateTaxStrategies([]);
+        createAssetAllocationChart({});
+    });
+    </script>
+</body>
+</html>
