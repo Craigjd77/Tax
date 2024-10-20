@@ -10,10 +10,10 @@
         :root {
             --primary-color: #1a237e;
             --secondary-color: #4caf50;
-            --background-color: #2c3e50;
-            --card-background: #34495e;
+            --background-color: #3a4f6a;
+            --card-background: #4a6285;
             --text-color: #ecf0f1;
-            --input-background: #2c3e50;
+            --input-background: #3a4f6a;
             --input-text-color: #ecf0f1;
             --input-border-color: #7f8c8d;
         }
@@ -121,14 +121,28 @@
             margin-top: 15px;
         }
         .strategy-impact {
-            margin-bottom: 15px;
-            font-size: 14px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .strategy-impact h3 {
+            margin-top: 0;
+            color: var(--secondary-color);
         }
         .impact-bar {
             background-color: var(--secondary-color);
             height: 8px;
-            margin-top: 5px;
+            margin: 10px 0;
             border-radius: 4px;
+        }
+        .strategy-impact a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        .strategy-impact a:hover {
+            text-decoration: underline;
         }
         .collapse-toggle {
             background: none;
@@ -198,16 +212,9 @@
                 <label for="state">State:</label>
                 <input type="text" id="state" name="state" required>
                 
-                <label for="filing_status">Filing Status:</label>
-                <select id="filing_status" name="filing_status" required>
-                    <option value="Single">Single</option>
-                    <option value="Married">Married</option>
-                </select>
-                
                 <label for="salary">Annual Salary:</label>
                 <input type="number" id="salary" name="salary" required>
                 
-                <h3>Assets</h3>
                 <label for="real_estate">Real Estate Value:</label>
                 <input type="number" id="real_estate" name="real_estate" required>
                 
@@ -217,85 +224,84 @@
                 <label for="cash">Cash:</label>
                 <input type="number" id="cash" name="cash" required>
                 
-                <button type="button" id="calculate-net-worth">Calculate Net Worth</button>
+                <label for="debt">Total Debt:</label>
+                <input type="number" id="debt" name="debt" required>
+                
+                <button type="submit" id="calculate-net-worth">Calculate Net Worth</button>
             </form>
         </div>
-        <div class="card" id="user-inputs">
-            <h2>Update Your Information</h2>
-            <form id="finance-form">
-                <label for="update_age">Age:</label>
-                <input type="number" id="update_age" name="age" required>
-                
-                <label for="update_salary">Annual Salary:</label>
-                <input type="number" id="update_salary" name="salary" required>
-                
-                <label for="current_net_worth">Current Net Worth:</label>
-                <input type="number" id="current_net_worth" name="current_net_worth" required>
-                
-                <label for="retirement_age">Desired Retirement Age:</label>
-                <input type="number" id="retirement_age" name="retirement_age" required>
-                
-                <label for="target_net_worth">Target Net Worth at Retirement:</label>
-                <input type="number" id="target_net_worth" name="target_net_worth" required>
-                
-                <button type="submit">Update Projections</button>
-            </form>
-        </div>
-    </div>
-    <div class="card" id="retirement-projection">
-        <h2>Retirement Projection</h2>
-        <div class="retirement-stats">
-            <div class="stat-item">
-                <span class="stat-label">Years to retirement:</span>
-                <span id="years-to-retirement" class="stat-value"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Current net worth:</span>
-                <span id="current-net-worth-display" class="stat-value"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Target net worth at retirement:</span>
-                <span id="target-net-worth-display" class="stat-value"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Required annual growth rate:</span>
-                <span id="required-growth-rate" class="stat-value"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Monthly investment needed:</span>
-                <span id="monthly-investment-needed" class="stat-value"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Yearly investment needed:</span>
-                <span id="yearly-investment-needed" class="stat-value"></span>
-            </div>
-        </div>
-        <div class="chart-container">
-            <canvas id="retirement-chart"></canvas>
-        </div>
-    </div>
-    <div class="grid-container">
-        <div class="card" id="tax-strategies">
-            <h2>Tax Optimization Strategies</h2>
-            <div id="strategies-list"></div>
-        </div>
-        <div class="card" id="asset-allocation">
+        <div class="card">
             <h2>Asset Allocation</h2>
             <div class="chart-container">
                 <canvas id="asset-chart"></canvas>
             </div>
         </div>
     </div>
-    
+    <div class="card">
+        <h2>Update Your Information</h2>
+        <form id="finance-form">
+            <label for="update_age">Current Age:</label>
+            <input type="number" id="update_age" name="age" required>
+            
+            <label for="update_salary">Annual Salary:</label>
+            <input type="number" id="update_salary" name="salary" required>
+            
+            <label for="current_net_worth">Current Net Worth:</label>
+            <input type="number" id="current_net_worth" name="current_net_worth" required>
+            
+            <label for="retirement_age">Desired Retirement Age:</label>
+            <input type="number" id="retirement_age" name="retirement_age" required>
+            
+            <label for="target_net_worth">Target Net Worth at Retirement:</label>
+            <input type="number" id="target_net_worth" name="target_net_worth" required>
+            
+            <button type="submit">Update Projections</button>
+        </form>
+    </div>
+    <div class="card">
+        <h2>Retirement Projections</h2>
+        <div class="retirement-stats">
+            <div class="stat-item">
+                <span class="stat-label">Years to Retirement:</span>
+                <span id="years-to-retirement"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Current Net Worth:</span>
+                <span id="current-net-worth-display"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Target Net Worth:</span>
+                <span id="target-net-worth-display"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Required Annual Growth Rate:</span>
+                <span id="required-growth-rate"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Monthly Investment Needed:</span>
+                <span id="monthly-investment-needed"></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Yearly Investment Needed:</span>
+                <span id="yearly-investment-needed"></span>
+            </div>
+        </div>
+        <div class="chart-container">
+            <canvas id="retirement-chart"></canvas>
+        </div>
+    </div>
+    <div class="card">
+        <h2>Tax Optimization Strategies</h2>
+        <div id="strategies-list"></div>
+    </div>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.querySelector('.collapse-toggle');
+        const content = document.querySelector('.collapsible-content');
         const financialSummaryForm = document.getElementById('financial-summary-form');
         const calculateNetWorthButton = document.getElementById('calculate-net-worth');
         const financeForm = document.getElementById('finance-form');
         let retirementChart, assetChart;
-
-        const toggleButton = document.querySelector('.collapse-toggle');
-        const content = document.querySelector('.collapsible-content');
 
         if (toggleButton && content) {
             toggleButton.addEventListener('click', function() {
@@ -309,34 +315,31 @@
                     content.style.maxHeight = content.scrollHeight + "px";
                 }
             });
-        } else {
-            console.error('Toggle button or content not found');
         }
 
         calculateNetWorthButton.addEventListener('click', calculateNetWorth);
 
-        function calculateNetWorth() {
+        function calculateNetWorth(e) {
+            e.preventDefault();
             const formData = new FormData(financialSummaryForm);
-            
+            const name = formData.get('name');
             const realEstate = parseFloat(formData.get('real_estate')) || 0;
             const investments = parseFloat(formData.get('investments')) || 0;
             const cash = parseFloat(formData.get('cash')) || 0;
+            const debt = parseFloat(formData.get('debt')) || 0;
             
-            const netWorth = realEstate + investments + cash;
+            const netWorth = realEstate + investments + cash - debt;
             
-            // Update net worth summary
-            document.getElementById('display-name').textContent = formData.get('name');
-            document.getElementById('display-net-worth').textContent = '$' + netWorth.toLocaleString();
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-net-worth').textContent = `$${netWorth.toLocaleString()}`;
             document.getElementById('net-worth-summary').style.display = 'block';
             
-            // Update user inputs
             document.getElementById('update_age').value = formData.get('age');
             document.getElementById('update_salary').value = formData.get('salary');
             document.getElementById('current_net_worth').value = netWorth;
             document.getElementById('retirement_age').value = parseInt(formData.get('age')) + 20;
             document.getElementById('target_net_worth').value = Math.round(netWorth * 2);
 
-            // Update asset allocation chart
             createAssetAllocationChart({
                 "Real Estate": realEstate,
                 "Investments": investments,
@@ -348,7 +351,6 @@
             e.preventDefault();
             const formData = new FormData(this);
             
-            // Use actual form data instead of simulated response
             const currentNetWorth = parseFloat(formData.get('current_net_worth')) || 0;
             const targetNetWorth = parseFloat(formData.get('target_net_worth')) || 0;
             const currentAge = parseInt(formData.get('age')) || 0;
@@ -368,9 +370,41 @@
                     monthly_investment_needed: monthlyInvestmentNeeded
                 },
                 tax_strategies: [
-                    { description: "Maximize 401(k) contributions", impact: 80 },
-                    { description: "Contribute to an IRA", impact: 60 },
-                    { description: "Consider tax-loss harvesting", impact: 40 }
+                    {
+                        description: "Maximize 401(k) contributions",
+                        explanation: "Contributing to a 401(k) can reduce your taxable income. In 2023, you can contribute up to $22,500 ($30,000 if you're 50 or older).",
+                        impact: 80,
+                        link: "https://www.irs.gov/retirement-plans/401k-plans",
+                        linkText: "IRS: 401(k) Plans"
+                    },
+                    {
+                        description: "Contribute to an IRA",
+                        explanation: "IRAs offer tax advantages for retirement savings. Traditional IRAs may offer tax-deductible contributions, while Roth IRAs offer tax-free withdrawals in retirement.",
+                        impact: 60,
+                        link: "https://www.irs.gov/retirement-plans/individual-retirement-arrangements-iras",
+                        linkText: "IRS: Individual Retirement Arrangements (IRAs)"
+                    },
+                    {
+                        description: "Consider tax-loss harvesting",
+                        explanation: "Sell investments at a loss to offset capital gains. This strategy can help reduce your tax liability on investment gains.",
+                        impact: 40,
+                        link: "https://www.investopedia.com/terms/t/taxgainlossharvesting.asp",
+                        linkText: "Investopedia: Tax-Loss Harvesting"
+                    },
+                    {
+                        description: "Explore Health Savings Accounts (HSAs)",
+                        explanation: "HSAs offer triple tax benefits: tax-deductible contributions, tax-free growth, and tax-free withdrawals for qualified medical expenses.",
+                        impact: 50,
+                        link: "https://www.healthcare.gov/glossary/health-savings-account-hsa/",
+                        linkText: "Healthcare.gov: Health Savings Account (HSA)"
+                    },
+                    {
+                        description: "Consider municipal bonds",
+                        explanation: "Interest from municipal bonds is often exempt from federal taxes and sometimes state and local taxes, potentially lowering your overall tax burden.",
+                        impact: 30,
+                        link: "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/municipal",
+                        linkText: "Investor.gov: Municipal Bonds"
+                    }
                 ]
             };
 
@@ -469,8 +503,11 @@
                 const strategyElement = document.createElement('div');
                 strategyElement.className = 'strategy-impact';
                 strategyElement.innerHTML = `
-                    <span>${index + 1}. ${strategy.description}</span>
+                    <h3>${index + 1}. ${strategy.description}</h3>
+                    <p>${strategy.explanation}</p>
                     <div class="impact-bar" style="width: ${strategy.impact}%;"></div>
+                    <p>Potential Impact: ${strategy.impact}%</p>
+                    <p>Learn more: <a href="${strategy.link}" target="_blank" rel="noopener noreferrer">${strategy.linkText}</a></p>
                 `;
                 strategiesList.appendChild(strategyElement);
             });
