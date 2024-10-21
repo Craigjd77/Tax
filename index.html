@@ -43,16 +43,7 @@
             padding: 20px;
             margin-bottom: 20px;
         }
-        h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
-            color: var(--text-color);
-            text-align: center;
-        }
-        h2 {
-            font-size: 24px;
-            margin-top: 0;
-            margin-bottom: 15px;
+        h1, h2 {
             color: var(--text-color);
         }
         label {
@@ -69,12 +60,6 @@
             font-size: 16px;
             background-color: var(--input-background);
             color: var(--input-text-color);
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--secondary-color);
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
         }
         button {
             background-color: var(--secondary-color);
@@ -95,22 +80,57 @@
             border-radius: 8px;
         }
         .retirement-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+            font-family: 'Courier New', monospace;
         }
         .stat-item {
-            background-color: var(--input-background);
+            background-color: #2c3e50;
+            border: 2px solid #34495e;
+            border-radius: 10px;
             padding: 15px;
-            border-radius: 4px;
-            font-size: 14px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 220px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .stat-item:hover {
+            transform: translateY(-5px);
         }
         .stat-label {
-            font-weight: bold;
-            display: block;
+            font-size: 0.9em;
+            color: #bdc3c7;
             margin-bottom: 5px;
-            color: var(--text-color);
+        }
+        .stat-value {
+            font-size: 1.4em;
+            color: #e74c3c;
+            font-weight: bold;
+            display: inline-block;
+            background-color: #1a1a1a;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+            animation: flipIn 0.5s ease-out;
+        }
+        @keyframes flipIn {
+            0% {
+                transform: perspective(400px) rotateX(90deg);
+                opacity: 0;
+            }
+            100% {
+                transform: perspective(400px) rotateX(0deg);
+                opacity: 1;
+            }
+        }
+        .strategy-impact a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        .strategy-impact a:hover {
+            text-decoration: underline;
         }
         .chart-container {
             margin-top: 20px;
@@ -125,11 +145,6 @@
             padding: 15px;
             background-color: var(--card-background);
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .strategy-impact h3 {
-            margin-top: 0;
-            color: var(--secondary-color);
         }
         .impact-bar {
             background-color: var(--secondary-color);
@@ -137,63 +152,53 @@
             margin: 10px 0;
             border-radius: 4px;
         }
-        .strategy-impact a {
-            color: var(--secondary-color);
-            text-decoration: none;
+        .retirement-dashboard {
+            background-color: #1c2a35;
+            border-radius: 10px;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
         }
-        .strategy-impact a:hover {
-            text-decoration: underline;
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
         }
-        .collapse-toggle {
-            background: none;
-            border: none;
-            color: var(--text-color);
-            font: inherit;
-            cursor: pointer;
-            padding: 0;
+        .dashboard-item {
+            background-color: #2c3e50;
+            border-radius: 8px;
+            padding: 15px;
             text-align: left;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
-        .collapse-toggle:focus {
-            outline: none;
+        .dashboard-label {
+            font-size: 0.9em;
+            color: #95a5a6;
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
-        .collapse-toggle .arrow {
-            transition: transform 0.3s;
+        .dashboard-value {
+            font-size: 1.6em;
+            color: #ecf0f1;
+            font-weight: bold;
         }
-        .collapse-toggle[aria-expanded="true"] .arrow {
-            transform: rotate(180deg);
+        .dashboard-chart {
+            grid-column: 1 / -1;
+            height: 300px;
+            background-color: #2c3e50;
+            border-radius: 8px;
+            padding: 15px;
         }
-        .collapsible-content {
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            max-height: 0;
-        }
-        .collapsible-content[hidden] {
-            display: block;
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .dashboard-chart {
+                grid-column: 1 / 3;
+            }
         }
     </style>
 </head>
 <body>
     <h1>Personal Tax Assistant</h1>
-    <div class="card" id="workflow-explanation">
-        <h2>
-            <button class="collapse-toggle" aria-expanded="false">
-                How to Use This Tool
-                <span class="arrow">▼</span>
-            </button>
-        </h2>
-        <div class="collapsible-content" hidden>
-            <ol>
-                <li>Fill out your financial information in the "Your Financial Summary" section</li>
-                <li>Click "Calculate Net Worth" to see your current financial status</li>
-                <li>Adjust your information in the "Update Your Information" section if needed</li>
-                <li>Click "Update Projections" to see how changes affect your retirement projections and tax strategies</li>
-            </ol>
-        </div>
-    </div>
     <div id="net-worth-summary" style="display: none;">
         <h2>Net Worth Summary</h2>
         <p>Name: <span id="display-name"></span></p>
@@ -213,222 +218,235 @@
                 <input type="text" id="state" name="state" required>
                 
                 <label for="salary">Annual Salary:</label>
-                <input type="number" id="salary" name="salary" required>
+                <input type="text" id="salary" name="salary" required>
                 
                 <label for="real_estate">Real Estate Value:</label>
-                <input type="number" id="real_estate" name="real_estate" required>
+                <input type="text" id="real_estate" name="real_estate" required>
                 
                 <label for="investments">Investments Value:</label>
-                <input type="number" id="investments" name="investments" required>
+                <input type="text" id="investments" name="investments" required>
                 
                 <label for="cash">Cash:</label>
-                <input type="number" id="cash" name="cash" required>
+                <input type="text" id="cash" name="cash" required>
                 
                 <label for="debt">Total Debt:</label>
-                <input type="number" id="debt" name="debt" required>
+                <input type="text" id="debt" name="debt" required>
                 
-                <button type="submit" id="calculate-net-worth">Calculate Net Worth</button>
+                <button type="submit">Calculate Net Worth</button>
             </form>
         </div>
-        <div class="card">
-            <h2>Asset Allocation</h2>
-            <div class="chart-container">
-                <canvas id="asset-chart"></canvas>
+        <div class="card" id="update-info" style="display: none;">
+            <h2>Update Your Information</h2>
+            <form id="update-form">
+                <label for="update_age">Current Age:</label>
+                <input type="number" id="update_age" name="update_age" required>
+                
+                <label for="retirement_age">Retirement Age:</label>
+                <input type="number" id="retirement_age" name="retirement_age" required>
+                
+                <label for="current_net_worth">Current Net Worth:</label>
+                <input type="text" id="current_net_worth" name="current_net_worth" required>
+                
+                <label for="target_net_worth">Target Net Worth at Retirement:</label>
+                <input type="text" id="target_net_worth" name="target_net_worth" required>
+                
+                <button type="submit">Update Projections</button>
+            </form>
+        </div>
+    </div>
+    <div class="retirement-dashboard">
+        <div class="dashboard-grid">
+            <div class="dashboard-item">
+                <div class="dashboard-label">Years to Retirement</div>
+                <div class="dashboard-value" id="years-to-retirement"></div>
+            </div>
+            <div class="dashboard-item">
+                <div class="dashboard-label">Current Net Worth</div>
+                <div class="dashboard-value" id="current-net-worth-display"></div>
+            </div>
+            <div class="dashboard-item">
+                <div class="dashboard-label">Target Net Worth</div>
+                <div class="dashboard-value" id="target-net-worth-display"></div>
+            </div>
+            <div class="dashboard-item">
+                <div class="dashboard-label">% of Salary Needed</div>
+                <div class="dashboard-value" id="percent-of-salary-needed"></div>
+            </div>
+            <div class="dashboard-item">
+                <div class="dashboard-label">Monthly Investment</div>
+                <div class="dashboard-value" id="monthly-investment-needed"></div>
+            </div>
+            <div class="dashboard-item">
+                <div class="dashboard-label">Yearly Investment</div>
+                <div class="dashboard-value" id="yearly-investment-needed"></div>
+            </div>
+            <div class="dashboard-item">
+                <div class="dashboard-label">Success Rate</div>
+                <div class="dashboard-value" id="success-rate"></div>
+            </div>
+            <div class="dashboard-chart">
+                <canvas id="retirement-chart"></canvas>
             </div>
         </div>
     </div>
-    <div class="card">
-        <h2>Update Your Information</h2>
-        <form id="finance-form">
-            <label for="update_age">Current Age:</label>
-            <input type="number" id="update_age" name="age" required>
-            
-            <label for="update_salary">Annual Salary:</label>
-            <input type="number" id="update_salary" name="salary" required>
-            
-            <label for="current_net_worth">Current Net Worth:</label>
-            <input type="number" id="current_net_worth" name="current_net_worth" required>
-            
-            <label for="retirement_age">Desired Retirement Age:</label>
-            <input type="number" id="retirement_age" name="retirement_age" required>
-            
-            <label for="target_net_worth">Target Net Worth at Retirement:</label>
-            <input type="number" id="target_net_worth" name="target_net_worth" required>
-            
-            <button type="submit">Update Projections</button>
-        </form>
-    </div>
-    <div class="card">
-        <h2>Retirement Projections</h2>
-        <div class="retirement-stats">
-            <div class="stat-item">
-                <span class="stat-label">Years to Retirement:</span>
-                <span id="years-to-retirement"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Current Net Worth:</span>
-                <span id="current-net-worth-display"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Target Net Worth:</span>
-                <span id="target-net-worth-display"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Required Annual Growth Rate:</span>
-                <span id="required-growth-rate"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Monthly Investment Needed:</span>
-                <span id="monthly-investment-needed"></span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Yearly Investment Needed:</span>
-                <span id="yearly-investment-needed"></span>
-            </div>
-        </div>
-        <div class="chart-container">
-            <canvas id="retirement-chart"></canvas>
-        </div>
-    </div>
-    <div class="card">
-        <h2>Tax Optimization Strategies</h2>
+    <div class="card" id="tax-strategies" style="display: none;">
+        <h2>Tax Strategies</h2>
         <div id="strategies-list"></div>
     </div>
+    <div class="card" id="asset-allocation" style="display: none;">
+        <h2>Asset Allocation</h2>
+        <div class="chart-container">
+            <canvas id="asset-chart"></canvas>
+        </div>
+    </div>
+
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const toggleButton = document.querySelector('.collapse-toggle');
-        const content = document.querySelector('.collapsible-content');
-        const financialSummaryForm = document.getElementById('financial-summary-form');
-        const calculateNetWorthButton = document.getElementById('calculate-net-worth');
-        const financeForm = document.getElementById('finance-form');
-        let retirementChart, assetChart;
+        const financeForm = document.getElementById('financial-summary-form');
+        const updateForm = document.getElementById('update-form');
+        const netWorthSummary = document.getElementById('net-worth-summary');
+        const updateInfo = document.getElementById('update-info');
+        const retirementProjections = document.getElementById('retirement-projections');
+        const taxStrategies = document.getElementById('tax-strategies');
+        const assetAllocation = document.getElementById('asset-allocation');
+        let retirementChart;
+        let assetChart;
 
-        if (toggleButton && content) {
-            toggleButton.addEventListener('click', function() {
-                const expanded = this.getAttribute('aria-expanded') === 'true';
-                this.setAttribute('aria-expanded', String(!expanded));
-                content.hidden = expanded;
-                
-                if (expanded) {
-                    content.style.maxHeight = null;
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                }
-            });
+        function formatNumberWithCommas(number) {
+            return number.toLocaleString('en-US');
         }
 
-        calculateNetWorthButton.addEventListener('click', calculateNetWorth);
-
-        function calculateNetWorth(e) {
-            e.preventDefault();
-            const formData = new FormData(financialSummaryForm);
-            const name = formData.get('name');
-            const realEstate = parseFloat(formData.get('real_estate')) || 0;
-            const investments = parseFloat(formData.get('investments')) || 0;
-            const cash = parseFloat(formData.get('cash')) || 0;
-            const debt = parseFloat(formData.get('debt')) || 0;
-            
-            const netWorth = realEstate + investments + cash - debt;
-            
-            document.getElementById('display-name').textContent = name;
-            document.getElementById('display-net-worth').textContent = `$${netWorth.toLocaleString()}`;
-            document.getElementById('net-worth-summary').style.display = 'block';
-            
-            document.getElementById('update_age').value = formData.get('age');
-            document.getElementById('update_salary').value = formData.get('salary');
-            document.getElementById('current_net_worth').value = netWorth;
-            document.getElementById('retirement_age').value = parseInt(formData.get('age')) + 20;
-            document.getElementById('target_net_worth').value = Math.round(netWorth * 2);
-
-            createAssetAllocationChart({
-                "Real Estate": realEstate,
-                "Investments": investments,
-                "Cash": cash
-            });
+        function generateRandomName() {
+            const celebrities = ["Brad Pitt", "Angelina Jolie", "Tom Hanks", "Meryl Streep", "Leonardo DiCaprio"];
+            const cartoonCharacters = ["Mickey Mouse", "Bugs Bunny", "Homer Simpson", "SpongeBob SquarePants", "Scooby-Doo"];
+            const allNames = [...celebrities, ...cartoonCharacters];
+            return allNames[Math.floor(Math.random() * allNames.length)];
         }
+
+        function generateRandomFinancialData() {
+            return {
+                name: generateRandomName(),
+                age: Math.floor(Math.random() * (65 - 22) + 22),
+                state: "California",
+                salary: Math.floor(Math.random() * (200000 - 30000) + 30000),
+                realEstate: Math.floor(Math.random() * (1000000 - 100000) + 100000),
+                investments: Math.floor(Math.random() * (500000 - 10000) + 10000),
+                cash: Math.floor(Math.random() * (50000 - 1000) + 1000),
+                debt: Math.floor(Math.random() * (100000 - 0) + 0)
+            };
+        }
+
+        function populateFinancialSummaryForm() {
+            const data = generateRandomFinancialData();
+            document.getElementById('name').value = data.name;
+            document.getElementById('age').value = data.age;
+            document.getElementById('state').value = data.state;
+            document.getElementById('salary').value = formatNumberWithCommas(data.salary);
+            document.getElementById('real_estate').value = formatNumberWithCommas(data.realEstate);
+            document.getElementById('investments').value = formatNumberWithCommas(data.investments);
+            document.getElementById('cash').value = formatNumberWithCommas(data.cash);
+            document.getElementById('debt').value = formatNumberWithCommas(data.debt);
+        }
+
+        // Populate form with random data when page loads
+        populateFinancialSummaryForm();
+
+        // Add event listeners for numeric inputs
+        const numericInputs = document.querySelectorAll('#salary, #real_estate, #investments, #cash, #debt, #current_net_worth, #target_net_worth');
+        numericInputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const value = this.value.replace(/[^\d]/g, '');
+                this.value = formatNumberWithCommas(parseInt(value) || 0);
+            });
+        });
 
         financeForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
             
-            const currentNetWorth = parseFloat(formData.get('current_net_worth')) || 0;
-            const targetNetWorth = parseFloat(formData.get('target_net_worth')) || 0;
-            const currentAge = parseInt(formData.get('age')) || 0;
-            const retirementAge = parseInt(formData.get('retirement_age')) || 0;
-            const yearsToRetirement = retirementAge - currentAge;
-
-            const annualGrowthNeeded = Math.pow(targetNetWorth / currentNetWorth, 1 / yearsToRetirement) - 1;
-            const monthlyInvestmentNeeded = (targetNetWorth - currentNetWorth * Math.pow(1 + annualGrowthNeeded, yearsToRetirement)) / 
-                                            ((Math.pow(1 + annualGrowthNeeded, yearsToRetirement) - 1) / annualGrowthNeeded) / 12;
-
-            const result = {
-                retirement_projection: {
-                    years_to_retirement: yearsToRetirement,
-                    current_net_worth: currentNetWorth,
-                    target_net_worth: targetNetWorth,
-                    annual_growth_needed: annualGrowthNeeded,
-                    monthly_investment_needed: monthlyInvestmentNeeded
-                },
-                tax_strategies: [
-                    {
-                        description: "Maximize 401(k) contributions",
-                        explanation: "Contributing to a 401(k) can reduce your taxable income. In 2023, you can contribute up to $22,500 ($30,000 if you're 50 or older).",
-                        impact: 80,
-                        link: "https://www.irs.gov/retirement-plans/401k-plans",
-                        linkText: "IRS: 401(k) Plans"
-                    },
-                    {
-                        description: "Contribute to an IRA",
-                        explanation: "IRAs offer tax advantages for retirement savings. Traditional IRAs may offer tax-deductible contributions, while Roth IRAs offer tax-free withdrawals in retirement.",
-                        impact: 60,
-                        link: "https://www.irs.gov/retirement-plans/individual-retirement-arrangements-iras",
-                        linkText: "IRS: Individual Retirement Arrangements (IRAs)"
-                    },
-                    {
-                        description: "Consider tax-loss harvesting",
-                        explanation: "Sell investments at a loss to offset capital gains. This strategy can help reduce your tax liability on investment gains.",
-                        impact: 40,
-                        link: "https://www.investopedia.com/terms/t/taxgainlossharvesting.asp",
-                        linkText: "Investopedia: Tax-Loss Harvesting"
-                    },
-                    {
-                        description: "Explore Health Savings Accounts (HSAs)",
-                        explanation: "HSAs offer triple tax benefits: tax-deductible contributions, tax-free growth, and tax-free withdrawals for qualified medical expenses.",
-                        impact: 50,
-                        link: "https://www.healthcare.gov/glossary/health-savings-account-hsa/",
-                        linkText: "Healthcare.gov: Health Savings Account (HSA)"
-                    },
-                    {
-                        description: "Consider municipal bonds",
-                        explanation: "Interest from municipal bonds is often exempt from federal taxes and sometimes state and local taxes, potentially lowering your overall tax burden.",
-                        impact: 30,
-                        link: "https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products/municipal",
-                        linkText: "Investor.gov: Municipal Bonds"
-                    }
-                ]
+            const name = formData.get('name');
+            const age = parseInt(formData.get('age'));
+            const salary = parseInt(formData.get('salary').replace(/,/g, ''));
+            const realEstate = parseInt(formData.get('real_estate').replace(/,/g, ''));
+            const investments = parseInt(formData.get('investments').replace(/,/g, ''));
+            const cash = parseInt(formData.get('cash').replace(/,/g, ''));
+            const debt = parseInt(formData.get('debt').replace(/,/g, ''));
+            
+            const netWorth = realEstate + investments + cash - debt;
+            
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('display-net-worth').textContent = '$' + formatNumberWithCommas(netWorth);
+            
+            netWorthSummary.style.display = 'block';
+            updateInfo.style.display = 'block';
+            
+            document.getElementById('update_age').value = age;
+            document.getElementById('current_net_worth').value = formatNumberWithCommas(netWorth);
+            
+            const assetData = {
+                'Real Estate': realEstate,
+                'Investments': investments,
+                'Cash': cash,
+                'Debt': debt
             };
-
-            updateResults(result);
+            createAssetAllocationChart(assetData);
+            assetAllocation.style.display = 'block';
         });
 
-        function updateResults(result) {
-            document.getElementById('years-to-retirement').textContent = result.retirement_projection.years_to_retirement;
-            document.getElementById('current-net-worth-display').textContent = '$' + result.retirement_projection.current_net_worth.toLocaleString();
-            document.getElementById('target-net-worth-display').textContent = '$' + result.retirement_projection.target_net_worth.toLocaleString();
-            document.getElementById('required-growth-rate').textContent = (result.retirement_projection.annual_growth_needed * 100).toFixed(2) + '%';
-            document.getElementById('monthly-investment-needed').textContent = '$' + result.retirement_projection.monthly_investment_needed.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('yearly-investment-needed').textContent = '$' + (result.retirement_projection.monthly_investment_needed * 12).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        updateForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            const currentAge = parseInt(formData.get('update_age'));
+            const retirementAge = parseInt(formData.get('retirement_age'));
+            const currentNetWorth = parseInt(formData.get('current_net_worth').replace(/,/g, ''));
+            const targetNetWorth = parseInt(formData.get('target_net_worth').replace(/,/g, ''));
+            
+            const result = calculateRetirementProjection(currentAge, retirementAge, currentNetWorth, targetNetWorth);
+            updateResults(result);
+            
+            retirementProjections.style.display = 'block';
+            taxStrategies.style.display = 'block';
+        });
 
-            updateRetirementChart(result.retirement_projection);
-            updateTaxStrategies(result.tax_strategies);
+        function calculateRetirementProjection(currentAge, retirementAge, currentNetWorth, targetNetWorth) {
+            const yearsToRetirement = retirementAge - currentAge;
+            const annualSalary = parseInt(document.getElementById('salary').value.replace(/,/g, ''));
+            const monthlyInvestmentNeeded = (targetNetWorth - currentNetWorth) / (yearsToRetirement * 12);
+            const yearlyInvestmentNeeded = monthlyInvestmentNeeded * 12;
+            const percentOfSalaryNeeded = (yearlyInvestmentNeeded / annualSalary) * 100;
+            const successRate = Math.min(100, (currentNetWorth / targetNetWorth) * 100 + 50);
+
+            return {
+                yearsToRetirement,
+                currentNetWorth,
+                targetNetWorth,
+                percentOfSalaryNeeded,
+                monthlyInvestmentNeeded,
+                yearlyInvestmentNeeded,
+                successRate,
+                annualSalary
+            };
+        }
+
+        function updateResults(result) {
+            document.getElementById('years-to-retirement').textContent = result.yearsToRetirement;
+            document.getElementById('current-net-worth-display').textContent = '$' + formatNumberWithCommas(result.currentNetWorth);
+            document.getElementById('target-net-worth-display').textContent = '$' + formatNumberWithCommas(result.targetNetWorth);
+            document.getElementById('percent-of-salary-needed').textContent = result.percentOfSalaryNeeded.toFixed(2) + '%';
+            document.getElementById('monthly-investment-needed').textContent = '$' + formatNumberWithCommas(Math.round(result.monthlyInvestmentNeeded));
+            document.getElementById('yearly-investment-needed').textContent = '$' + formatNumberWithCommas(Math.round(result.yearlyInvestmentNeeded));
+            document.getElementById('success-rate').textContent = result.successRate.toFixed(2) + '%';
+
+            updateRetirementChart(result);
+            updateTaxStrategies(result);
         }
 
         function updateRetirementChart(projectionData) {
             const ctx = document.getElementById('retirement-chart').getContext('2d');
-            const currentAge = parseInt(document.getElementById('update_age').value);
-            const years = Array.from({length: projectionData.years_to_retirement}, (_, i) => currentAge + i);
-            const projectedWealth = years.map((_, index) => 
-                projectionData.current_net_worth * Math.pow(1 + projectionData.annual_growth_needed, index)
+            const years = Array.from({length: projectionData.yearsToRetirement}, (_, i) => i);
+            const projectedWealth = years.map(year => 
+                projectionData.currentNetWorth + (projectionData.monthlyInvestmentNeeded * 12 * year)
             );
 
             if (retirementChart) {
@@ -442,12 +460,13 @@
                     datasets: [{
                         label: 'Projected Wealth',
                         data: projectedWealth,
-                        borderColor: '#4caf50',
-                        fill: false
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true
                     }, {
-                        label: 'Target Net Worth at Retirement',
-                        data: Array(projectionData.years_to_retirement).fill(projectionData.target_net_worth),
-                        borderColor: '#f39c12',
+                        label: 'Target Net Worth',
+                        data: Array(projectionData.yearsToRetirement).fill(projectionData.targetNetWorth),
+                        borderColor: '#2ecc71',
                         borderDash: [5, 5],
                         fill: false
                     }]
@@ -456,11 +475,6 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        title: {
-                            display: true,
-                            text: 'Retirement Wealth Projection',
-                            color: '#ecf0f1'
-                        },
                         legend: {
                             labels: {
                                 color: '#ecf0f1'
@@ -471,17 +485,20 @@
                         x: {
                             title: {
                                 display: true,
-                                text: 'Age',
+                                text: 'Years',
                                 color: '#ecf0f1'
                             },
                             ticks: {
                                 color: '#ecf0f1'
+                            },
+                            grid: {
+                                color: 'rgba(236, 240, 241, 0.1)'
                             }
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Wealth ($)',
+                                text: 'Net Worth',
                                 color: '#ecf0f1'
                             },
                             ticks: {
@@ -489,6 +506,9 @@
                                 callback: function(value) {
                                     return '$' + value.toLocaleString();
                                 }
+                            },
+                            grid: {
+                                color: 'rgba(236, 240, 241, 0.1)'
                             }
                         }
                     }
@@ -496,7 +516,46 @@
             });
         }
 
-        function updateTaxStrategies(strategies) {
+        function updateTaxStrategies(result) {
+            const strategies = [
+                {
+                    description: "Maximize 401(k) contributions",
+                    explanation: `Based on your yearly investment needed of $${result.yearlyInvestmentNeeded.toLocaleString()}, you should aim to contribute $${Math.min(19500, result.yearlyInvestmentNeeded).toLocaleString()} to your 401(k) this year.`,
+                    impact: Math.min(100, (Math.min(19500, result.yearlyInvestmentNeeded) / result.yearlyInvestmentNeeded) * 100),
+                    link: "https://www.irs.gov/retirement-plans/401k-plans",
+                    linkText: "IRS: 401(k) Plans",
+                    form: "Form 5500, Annual Return/Report of Employee Benefit Plan",
+                    news: "https://www.cnbc.com/2023/04/20/401k-contribution-limits-2023-how-much-you-can-save-for-retirement.html"
+                },
+                {
+                    description: "Contribute to an IRA",
+                    explanation: `Consider contributing up to $${Math.min(6000, Math.max(0, result.yearlyInvestmentNeeded - 19500)).toLocaleString()} to an IRA this year.`,
+                    impact: Math.min(60, (Math.min(6000, Math.max(0, result.yearlyInvestmentNeeded - 19500)) / result.yearlyInvestmentNeeded) * 100),
+                    link: "https://www.irs.gov/retirement-plans/individual-retirement-arrangements-iras",
+                    linkText: "IRS: Individual Retirement Arrangements (IRAs)",
+                    form: "Form 5498, IRA Contribution Information",
+                    news: "https://www.forbes.com/advisor/retirement/traditional-ira-vs-roth-ira/"
+                },
+                {
+                    description: "Consider tax-loss harvesting",
+                    explanation: `If you have investments in taxable accounts, consider tax-loss harvesting to offset up to $3,000 of your income.`,
+                    impact: Math.min(40, (3000 / result.annualSalary) * 100),
+                    link: "https://www.irs.gov/taxtopics/tc409",
+                    linkText: "IRS: Capital Gains and Losses",
+                    form: "Schedule D (Form 1040), Capital Gains and Losses",
+                    news: "https://www.investopedia.com/articles/taxes/08/tax-loss-harvesting.asp"
+                },
+                {
+                    description: "Explore Health Savings Accounts (HSAs)",
+                    explanation: `If eligible, consider contributing to an HSA for additional tax benefits and healthcare savings.`,
+                    impact: Math.min(50, (3650 / result.yearlyInvestmentNeeded) * 100),
+                    link: "https://www.irs.gov/publications/p969",
+                    linkText: "IRS: Health Savings Accounts and Other Tax-Favored Health Plans",
+                    form: "Form 8889, Health Savings Accounts (HSAs)",
+                    news: "https://www.nerdwallet.com/article/investing/what-is-an-hsa"
+                }
+            ];
+
             const strategiesList = document.getElementById('strategies-list');
             strategiesList.innerHTML = '';
             strategies.forEach((strategy, index) => {
@@ -506,8 +565,10 @@
                     <h3>${index + 1}. ${strategy.description}</h3>
                     <p>${strategy.explanation}</p>
                     <div class="impact-bar" style="width: ${strategy.impact}%;"></div>
-                    <p>Potential Impact: ${strategy.impact}%</p>
+                    <p>Potential Impact: ${strategy.impact.toFixed(2)}%</p>
                     <p>Learn more: <a href="${strategy.link}" target="_blank" rel="noopener noreferrer">${strategy.linkText}</a></p>
+                    <p>Relevant Tax Form: ${strategy.form}</p>
+                    <p>Related News: <a href="${strategy.news}" target="_blank" rel="noopener noreferrer">Read more</a></p>
                 `;
                 strategiesList.appendChild(strategyElement);
             });
@@ -530,70 +591,17 @@
                     datasets: [{
                         data: data,
                         backgroundColor: [
-                            '#4caf50', '#f39c12', '#3498db', '#e74c3c', '#9b59b6',
-                            '#1abc9c', '#34495e', '#16a085', '#27ae60', '#2980b9'
+                            '#4caf50', '#f39c12', '#3498db', '#e74c3c'
                         ]
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Asset Allocation',
-                            color: '#ecf0f1'
-                        },
-                        legend: {
-                            labels: {
-                                color: '#ecf0f1'
-                            }
-                        }
-                    }
+                    maintainAspectRatio: false
                 }
             });
         }
-
-        // Initialize charts with empty data
-        updateRetirementChart({
-            years_to_retirement: 0,
-            current_net_worth: 0,
-            target_net_worth: 0,
-            annual_growth_needed: 0
-        });
-        updateTaxStrategies([]);
-        createAssetAllocationChart({});
     });
-    function generateRandomFinancialData() {
-    return {
-        name: "John Doe",
-        age: Math.floor(Math.random() * (65 - 22) + 22),
-        state: "California",
-        salary: Math.floor(Math.random() * (200000 - 30000) + 30000),
-        realEstate: Math.floor(Math.random() * (1000000 - 100000) + 100000),
-        investments: Math.floor(Math.random() * (500000 - 10000) + 10000),
-        cash: Math.floor(Math.random() * (50000 - 1000) + 1000),
-        debt: Math.floor(Math.random() * (100000 - 0) + 0)
-    };
-}
-
-function populateFinancialSummaryForm() {
-    const data = generateRandomFinancialData();
-    document.getElementById('name').value = data.name;
-    document.getElementById('age').value = data.age;
-    document.getElementById('state').value = data.state;
-    document.getElementById('salary').value = data.salary;
-    document.getElementById('real_estate').value = data.realEstate;
-    document.getElementById('investments').value = data.investments;
-    document.getElementById('cash').value = data.cash;
-    document.getElementById('debt').value = data.debt;
-}
-
-// Call this function when the page loads
-document.addEventListener('DOMContentLoaded', function() {
-    populateFinancialSummaryForm();
-    // ... (keep the rest of your existing DOMContentLoaded code here)
-});
     </script>
 </body>
 </html>
